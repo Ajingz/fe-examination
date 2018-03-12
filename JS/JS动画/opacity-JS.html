@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>JS透明度动画</title>
+<style>
+body{
+   margin:0;
+   padding:0;
+	}
+#div1{
+	width:200px;
+	height:200px;
+	background:red;
+	filter:alpha(opacity,30); /*IE浏览器专用*/
+    opacity:0.3;  /*其他高版本浏览器*/
+	}
+</style>
+<script>
+var timer=null;
+var alpha=30;
+window.onload=function(){
+	var oDiv=document.getElementById('div1');
+	oDiv.onmouseover=function(){
+		startMove(100);
+		}
+	oDiv.onmouseout=function(){
+		startMove(30);
+		}
+	}
+function startMove(itag){
+	clearInterval(timer);
+	var oDiv=document.getElementById('div1');
+	timer=setInterval(function(){
+		var speed=0;
+		if(alpha>itag){
+			speed=-10;
+			}
+		else{
+			speed=10;
+			}
+		if(alpha==itag){
+			clearInterval(timer);
+			}
+		else{
+			alpha+=speed;
+			oDiv.style.filter='alpha(opacity:'+alpha+')'; //前面两个引号一对后面两个引号一对，用来传给css用的filter
+			oDiv.style.opacity=alpha/100; 
+			}
+		},30)
+	}
+</script>
+</head>
+
+<body>
+<div id="div1"></div>
+</body>
+</html>

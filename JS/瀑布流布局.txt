@@ -1,0 +1,113 @@
+瀑布流布局 2017/3/27
+固定图片宽度，计算每行排列的图片数，第二行第一张图片排列在第一行最矮的图片下面，检测每列的高度，每列高度用数组存放剩余图片依次排列在高度最少的那列
+三个方法：
+1、JS原生方法
+（1）页面结构和布局
+关键点：定位，通过计算位置将数据块排列
+<body>
+  <div id="main">
+      <div class="box">
+         <div class ="pic">
+             <img src="">
+         </div>
+      </div>
+   </div>
+</body>
+
+ (2)将需要进行瀑布流布局的元素从父元素中取出来，封装成函数。
+   function getByClass(paert,clsName){//根据claa获取元素，结果为一个数组
+      var boxArr=new Attay();  //用来存储获取到的所有class为box的元素
+      oElements=parent.getElementByTagName('*');
+      for(var i=0;i<oElements.length;i++){
+          if(oElements[i].className==clsName){
+            boxArr.push(oElements[i]);
+          }
+      }
+      return boxArr;
+   } 
+   //计算页面显示的列数，页面宽度/盒子宽度
+  var oboxW=oboxs[0].offsetWidth; //瀑布流等宽不等高
+  var col=Math.floor(document.documentElement.clientWidth/oboxW);
+  //设置最外的盒子的宽度,  每列的宽度*列数
+  oParent.style.cssText='width:'+oBoxW*col+'px;margin:0 atuo';//CSS样式以字符串形式设置,本质设置HTML元素的style
+
+ (3)调整第二行第一张图片的位置，找到第一行最矮的盒子，计算图片应放置的top值和left值，需遍历第一行所有图片找到最矮的盒子的索引
+  var hArr=[];//存放每一列高度的数组
+  for(var i=0;i<oboxs.length;i++){
+     if(i<col){
+       hArr.push(oboxs[i].offsetHeight);
+     }else{
+       var minH=Math.min.apply(null,hArr);
+       var index=getMinHIndex(hArr,minH);
+       oboxs[i].style.position='absolute';
+       oboxs[i].style.top=minH;
+       oboxs[i].style.left=oboxs[index].offsetLeft+'px';//因为加了绝对定位导致剩余图片重叠
+       hArr[index]+=oboxs[i].offsetHeight;
+     }
+  }
+  function getMinHIndex(arr,val){//找到最矮的盒子的索引
+     for(var i in arr){
+        if(arr[i]==val){
+          return i;
+          }
+      }
+  }
+ (4)拖动滚动条的时候图片自动加载到当前页面的尾部
+  //判断是否具备加载的条件
+  function checkScrollSlide(){
+   var oPaernt=document.getElementById('main');
+   var oBoxs=getByClass('oPaernt',box');
+   var lastBoxH=oBoxs[oBoxs.length-1].offsetTop+Math.floor(oBoxs[oBox.length-1].offsetHeight/2);
+   var scrollTop=document.body.scrollTop||document.documentElement.scrollTop;//滚动条拖动距离
+   var height=document.body.clientHeight||document.documentElement.clientHeight;//浏览器窗口高度
+   return (lastBoxH<scrollTop+height)?true:false;
+}
+  (5)将从后台来的Json数据渲染到页面中
+  var dataInt={"data":[{"src":'0.jpg'},{"src":'1.jpg'},{"src":'2.jpg'}]};
+  遍历后台的json数据,设置成盒子的格式添加到页面尾部
+   var oparent=document.getElementById('main');//将新的数据添加到main中div的底部
+   for(var i=0;i<dataInt.data.length;i++){
+      var oBox=document.creatElement('div');
+      oBox.className='box'; 
+      oparent.appendChild(oBox);
+      var oPic=document.creatElement('div');
+      oBox.appendChild(oPic);
+      var oImg=document.creatElement('img');
+      oImg.src="images/"+dataInt.data[i].src;
+      oPic.appendChild(oImg);
+   }
+     再调用计算高度的函数
+   
+注意：Math.min方法求一组数据中最小值，可使用apply方法改变this的指向
+      JS求滚动条滚动距离存在标准模式和混杂模式，混杂模式通过body来检测(document.body.scrollTop)，标准模式通过html元素检测(document.documentElement.scrollTop)
+
+2、jQuery方法
+$(window).on('load',function(){
+   waterfall();
+})
+function waterfall(){
+	var $boxs=$('#main>div') //匹配所有一级子元素div
+	var w=$boxs.eq(0).outerWidth();
+	var cols=Math.floor($(window).width()/w);
+	$('#main').width(w*cols).css('margin','0 auto');
+	var hArr=[];
+	$boxs.each(function(index,value){
+		var h=$boxs.eq(index).outHeight();
+		if(index<cols){
+			hArr[index]=h;
+			}else{
+			var minH=Math.min.apply(null,hArr);
+			var minHIndex=$.inArray(minH,hArr);
+			$(value).css({
+				'position':'absolute',
+				'top':minH+'px',
+				'left':minHIndex*w+'px'
+				})
+			hArr[minHIndex]+=$boxs.eq(index).outerHeight;
+			}
+		})
+	
+	}
+注意：
+width指定义的宽度，outerwidth指包括padding,margin的所有宽度
+3、CSS3多栏布局

@@ -1,0 +1,67 @@
+内容：
+1、5-6中实现方式（JS+CSS）
+2、知识点：snippets,css和script标签位置，使用jQuery cdn好处，事件委托
+3、缺点：全局变量的依赖，没有块级作用域
+4、设计模式
+
+
+一、
+<script>
+	var num=2;
+	var $item=$('#rating').find('.rating-item');
+
+	var lightOn=function(num){
+		$item.each(function(index){
+			if(index<num){
+				$(this).css('background-position','0 -41px');
+			}else{
+				$(this).css('background-position','0 0');
+			}
+
+		})
+	}
+	lightOn(num);
+	//初始化绑定事件
+	$item.on('mouseover',function(){
+		lightOn($(this).index()+1)
+	}).on('click',function(){
+		num=$(this).index()+1;
+	})
+	$('#rating').on('mouseout',function(){
+		lightOn(num);
+	})
+</script>
+存在问题：1全局变量太多不便于维护与添加新功能
+	解决方案：1、添加自己独有命名空间
+		zj_rating将变量添加成属性，lightOn添加成方法
+		2、闭包,
+		(function(){
+		//里面的所有东西都是局部的
+		})();
+	2、事件绑定时为每个li绑定了事件，造成了浪费
+	解决方法：为li父容器上绑定一次事件，由于事件冒泡机制，他本身会触发，他的父容器和之上的容器都会触发事件，在父容器上判断是不是相应子容器触发相应事件，如果是，再执行。称为事件委托或者事件代理
+	3、代码复用问题
+        解决方法：封装成jQuery插件
+	
+增加新功能时引入原则，对扩展开放，对修改封闭
+使用设计模式：Gof
+	创建型模式，将创建对象的过程进行了封装
+	结构型模式，解决类、对象、模块间的耦合性
+	行为型模式，识别对象间的常用交流模式
+
+使用模板方法模式改进第一种实现方式：
+1、抽象父类
+2、具体实现子类
+方法三（纯CSS）：
+原理分析：
+hover伪类
+将父容器背景设置成为全熄灭的
+方法四（CSS）：
+
+方法五：
+设置父容器背景为熄灭的星星，再设置div为展示层，背景为点亮的星星，高度与父容器等高，宽度可设置，在需要点亮时，将div覆盖掉父容器即可，鼠标划入时，真是曾宽度变化。
+再设置li标签为遮罩层，层级最高，浮在最上面让鼠标可以在li标签中划过，每个li标签的大小对应一颗星星，划过li是相当于划过星星
+策略模式：
+
+
+

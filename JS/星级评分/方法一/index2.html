@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>星级评分No.1</title>
+<style type="text/css">
+	body,ul,li{
+		padding:0px;
+		margin:0px;
+	}
+	li{
+		list-style-type: none;
+	}
+	.rating{
+		width:205px;
+		height:41px;
+		margin:100px auto;
+	}
+	.rating-item{
+		float:left;
+		width:41px;
+		height:41px;
+		background:url(http://i.niupic.com/images/2017/05/31/iVPGGC.png)no-repeat;
+		/*background-position:0 -41px;*/
+		cursor:pointer;
+	}
+</style>
+</head>
+<body>
+
+<ul class="rating" id='rating'>
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+</ul>	
+
+<ul class="rating" id='rating2'>
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+	<li class="rating-item" title=""></li>	
+</ul>
+<script src="jQuery.js"></script>
+<script>
+var rating=(function(){
+
+	var lightOn=function(num,$item){
+		$item.each(function(index){
+			if(index<num){
+				$(this).css('background-position','0 -41px');
+			}else{
+				$(this).css('background-position','0 0');
+			}
+
+			})
+	}
+	var init=function(el,num){
+		var $rating=$(el);
+		var $item=$rating.find('.rating-item');
+		lightOn(num,$item);
+		
+		//初始化绑定事件
+		$rating.on('mouseover','.rating-item',function(){
+			lightOn($(this).index()+1,$item)
+			}).on('click','.rating-item',function(){
+				num=$(this).index()+1;
+			}).on('mouseout',function(){
+				lightOn(num,$item);
+			})
+		};
+		//jQuery插件
+		$.fn.extend({
+			rating:function(num){
+				return this.each(function(){
+					init(this,num)
+				})
+			}
+		})
+	return {
+		init:init
+	}
+})()
+
+   rating.init('#rating',2);
+   // rating.init('#rating2',3);
+   $('#rating2').rating(4);
+
+     
+    
+</script>
+</body>
+</html>

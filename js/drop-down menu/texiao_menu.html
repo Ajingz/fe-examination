@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+    <title>特效菜单</title>
+<head>
+    <style type="text/css">
+        .navlist
+        {
+            position: absolute;
+            top: 10px;
+        }
+        a
+        {
+            text-decoration: none;
+            color: white;
+        }
+        .navlist a
+        {
+            margin-left: 60px;
+            color: #666;
+        }
+        .expand
+        {
+            height: 0px;
+            background-color: #333d4d;
+            overflow: hidden;
+            position: relative;
+            top: 30px;
+            width: 100%;
+            /*height:130px;*/
+        }
+        .expdiv
+        {
+            /*height: 130px;*/
+            width: 500%;
+        }
+        .expdiv-list
+        {
+            width: 20%;
+            text-align: center;
+            float: left;
+            line-height: 110px;
+            color:white;
+        }
+        .expand .close-btn
+        {
+            width: 120px;
+            height: 20px;
+            background: url(http://img.mukewang.com/5461ba3b0001ee3603840154.jpg) no-repeat -13px -117px;
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            margin-left: -60px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="menuList" class="navlist">
+        <a href="#">首页</a> 
+        <a href="#">课程大厅</a> 
+        <a href="#">学习中心</a> 
+        <a href="#">个人中心</a>
+        <a href="#">关于我们</a>
+    </div> <!-- 一级菜单结束 -->
+    <div id="expandZone" class="expand"><!-- 二级菜单展开层 -->
+        <div class="expdiv">
+            <div class="expdiv-list">
+                <a href="#">慕课网主页</a>
+            </div>
+            <div class="expdiv-list">
+                <a href="#" id="A4">前端课程</a> 
+                <a href="#">手机开发</a>
+                 <a href="#">后台编程</a>
+            </div>
+            <div class="expdiv-list">
+                <a href="#">Javascript</a> 
+                <a href="#">CSS</a> 
+                <a href="#">JQuery</a>
+            </div>
+            <div class="expdiv-list">
+                个人信息：
+            </div>
+            <div class="expdiv-list">
+                公司地址：北京市西城区德外大街10号
+            </div><!-- 二级菜单结束 -->
+        </div><!-- 二级菜单合集 -->
+        <div id="closeBtn" class="close-btn">
+        </div>
+    </div>
+<script src='jquery.js'></script>
+<script>
+	$(function(){
+		$('#menuList').on('click','a',function(){
+			var index=$(this).index(),
+			    margl='-'+index*100+'%';
+			if($(this).hasClass('act')){
+				$('#closeBtn').click();
+				$(this).removeClass('act');
+			}
+			if($('#expandZone').hasClass('active')){
+				$('#expandZone .expdiv').animate({marginLeft:margl});
+			}else{
+				$('#expandZone .expdiv').css({marginLeft:margl});
+				$('#expandZone').animate({height:'130px'}).addClass('active');				
+			}
+			$(this).addClass('act').siblings().removeClass('act');
+			return false;
+		})
+		$('#closeBtn').on('click',function(){
+			$('#expandZone').animate({height:'0px'},function(){
+				$(this).removeClass('active');
+			})
+			return false;
+		})
+	})
+</script>
+</body>
+</html>

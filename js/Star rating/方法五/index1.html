@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>星级评分-第五种实现方式</title>
+</head>
+<style type="text/css">
+	body,ul,li{
+		padding:0;
+		margin:0;
+	}
+	li{
+		list-style-type: none;
+	}
+	.rating{
+		position:relative;
+		width:185px;
+		/*height:37px;*/
+		background:url(rating.png)repeat-x;
+		margin:100px auto;
+		
+	}
+	.rating-display{
+		width:37px;
+		height:37px;
+		background:url(rating.png)repeat-x 0 -37px;		
+	}
+	.rating-mask{
+		position: absolute;
+		top:0;
+		left:0;
+		width:100%;
+	}
+	.rating-item{
+
+		float:left;
+		width:37px;
+		height:37px;
+		cursor: pointer;
+	}
+</style>
+<body>
+
+<div id="rating" class="rating"><!-- 父容器 -->
+<!-- 	<div class='rating-display'></div>
+		<ul class="rating-mask">
+			<li class='rating-item'></li>
+			<li class='rating-item'></li>
+			<li class='rating-item'></li>
+			<li class='rating-item'></li>
+			<li class='rating-item'></li>
+		</ul> -->	
+</div>
+<!-- <script type="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script> -->
+<script src="jquery.js"></script>
+<script>
+	var rating=(function(){
+		//策略模式
+		var strage={
+			entire:function(){
+				return 1
+			},
+			half:function(){
+				return 2
+			},
+			quarter:function(){
+				return 4
+			},
+		}
+		//评分构造函数
+		var Rating=function(el,options){
+			this.el=$(el);
+			this.opts=$.extend({},defaults,options);
+
+			if(!strage[this.opts.mode]){
+				this.opts.mode='entire';
+			}
+			var rr=strage[this.opts.mode]();
+			this.opts.total*=rr;
+			this.opts.num*=rr;
+			this.itemWidth=37/rr;
+			this.displayWidth=this.opts.num*this.itemWidth;
+		}
+		var defaults={
+			mode:'haf',
+			total:5,
+			num:2,
+			readOnly:false,
+			select:function(){},
+			chosen:function(){}
+		};
+		Rating.prototype.init=function(){
+			this.addHtml();
+			this.setCSS();
+			this.bindEvent();
+		};
+		Rating.prototype.addHtml=function(){
+			var html='';
+			 html+='<div class="rating-display"></div>';
+			 html+='<ul class="rating-mask">';
+			 for(var i=0;i<this.opts.total;i++){
+			 	html+='<li class="rating-item"></li>';
+			 }
+			 html+='</ul>';
+			 this.el.html(html);
+		};
+		Rating.prototype.setCSS=function(){
+			this.el.width(this.opts.total*this.itemWidth);
+			this.display=this.el.find('.rating-display');
+			this.display.width(this.displayWidth);
+			this.el.find('.rating-item').width(this.itemWidth);
+		};
+		Rating.prototype.bindEvent=function(){
+			var self=this;
+
+			self.el.on('mouseover','.rating-item',function(){
+				var count=$(this).index()+1;
+				self.display.width(count*self.itemWidth);
+
+				typeof self.opts.select==='function'&&self.opts.select.call(this,count,self.opts.total)
+			}).on('click','.rating-item',function(){
+				var count=$(this).index()+1;
+				self.displayWidth=count*self.itemWidth;
+
+				typeof self.opts.chosen==='function'&&self.opts.chosen.call(this,count,self.opts.total);
+				// self.el.trigger('chosen',[count,self.opts.total]);
+			}).on('mouseout',function(){
+				self.display.width(self.displayWidth);
+			})
+		}
+		Rating.prototype.unbindEvent=function(){//解绑定事件
+			this.el.off();
+		}
+		var init=function(el,option){
+			var $el=$(el),
+				rating=$el.data('rating')
+			if(!rating){
+				var rating=new Rating(el,typeof option==='object'&&option);
+				$el.data('rating',rating);
+				rating.init();
+			}
+
+			
+			if(typeof option==='string'){				
+				rating[option]();
+			}
+		};
+		return{
+			init:init
+		}
+	})();
+
+	rating.init('#rating',{
+		num:2,
+		// chosen:function(count,total){
+		// 	console.log(count+'/'+total);
+		// }
+		chosen:function(){
+			rating.init('#rating','unbindEvent')
+		}
+	});
+</script>
+</body>
+</html> 

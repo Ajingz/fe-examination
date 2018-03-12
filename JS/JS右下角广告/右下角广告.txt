@@ -1,0 +1,56 @@
+右下角广告：
+1、将广告模块放入页面右下角，使用定位
+   position:fixed;//该属性不需要参考值,IE6不支持
+   right:0;
+   bottom:0;
+
+2、关闭按钮
+   给一个空链接,点击后屋任何效果。设置按钮样式
+   <a herf="javascript:void(0);"></a>
+3、js
+   获取广告和关闭按钮元素
+   设置按钮的onclick事件，设置ad.style.display="none"
+  或
+   设置.hiden{display:none}
+   设置ad.className="hiden"
+4、广告中插入媒体文件，格式为.swf
+
+5、右下角弹窗
+   鼠标划过时显示广告，
+   点击按钮可关闭
+   （1）封装document.getElementById函数
+        var $ = function(item){
+	    return document.getElementById(item);
+	}
+   （2）$('clickMe').onmouseover= function(){//鼠标移入事件
+		//$('closeBtn').style.display='block';
+		  $('showPic').className="show";
+		  $('closeBtn').className="show";
+		  
+		}
+        
+	$('closeBtn').onclick= function(){//鼠标点击事件
+		$('showPic').className="hide";
+		$('closeBtn').className='hide';
+		}
+注意：
+注意原先关闭按钮中的display：none；
+
+在面点击参数中修改为.show｛display:block;}时要注意css的样式优先级，
+
+要在.show之前加上 #tipCon .show{display:block;}
+
+伸缩式广告原理
+   向下展开、向上收起，改变height值
+   	if(h<maxh){
+		h+=step;
+		setTimeout(adDown,1);
+ 		ad.style.height=h+'px';
+		ad.style.display='block';
+		}	
+	if(h>0){
+		h-=step;
+		ad.style.height=h+'px';
+		setTimeout(adUp,1);
+		};
+带缓冲效果的弹出广告

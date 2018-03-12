@@ -1,0 +1,149 @@
+网页定位导航特效学习  2017/3/21-2017/3/27
+特效设计所需技术点：
+1、锚点：网页制作中超链接的一种，是页面内的超级链接。（可以在文档中设置标记，通常放在文档顶部）
+2、关于滚动条定位的事件与方法（jQuery方法）
+jQuery中关于定位的技术点：
+（1）scroll([data],fn):scroll适用于所有可滚动的元素和window对象
+（2）scrollTop([val]):获取/设置匹配元素相对滚动条顶部的偏移
+（3）offset() :获取匹配元素的相对偏移，返回对象包含两个属性，top、left,以像素计。本案例中适用top属性。
+
+思路：
+1、静态网页的实现
+ （1）运用CSS，让导航菜单在右侧绝对定位显示(position属性)
+      position:fixed;//相对浏览器窗口对元素定位
+      left:50%;//让元素居中，居中后元素的左边位于页面中间
+      margin-left:400px;//相应于left50%定位
+     
+ （2）运用锚点，实现导航定位
+       .addClass("current");
+      <li><a href="#item1" class="current">1F 男装</a></li> //默认当前选中
+2、jQuery实现定位导航特效
+（1）滚动条滚动时获取距离顶部的top值
+     获取到相应的scrollTop()、导航和当前所在的楼层。
+（2）导航菜单在滚动条滚动时自动设置焦点
+     遍历时需要对滚动条位置和每个元素位置做一个判断，并把相应的元素id值赋予currentId
+（3）滚动到指定楼层时，给超链接设置current值，滚动到其他楼层时，取消超链接current值
+     <script>
+       $(document).ready(function(){
+         $(window).scroll(function(){   //加载滚动条滚动事件
+            var top=$(document).scrollTop();   //获取scrollTop()
+            var menu=$("#menu");               //获取导航，为了之后方面使用
+            var items=$("#content").find(".item");   //获取所有楼层
+            var currentId="";        //当前所在的楼层(item) #id
+          items.each(function(){
+           var m=$(this);
+           var itemTop=m.offset().top;   //当前所在位置top值
+           if(top>itemTop){
+               currentId="#"+m.attr("id");  //把相应的元素id值赋予currentId
+           }else{
+
+                 return false;
+
+           }
+         });
+         var currentLink=menu.find(".current");
+         if(currentId&&currentLink.attr("href")!=currentId){
+           currentLink.removeClass("current");
+           menu.find("["href="+currentId+]").addClass("current");
+          }
+}) 
+})
+    
+</srcipt>
+
+3、浏览器兼容性测试
+   工具：IETester 包含多个版本的IE  http://www.my-debugbar.com/wiki/IETester/HomePage
+   IE6不支持fixed属性
+   /ie6 *hack*/
+   *html #menu{   //解决IE6不支持问题，但导航条会出现跳变
+    /*position:fixed*/
+   position:absolute;
+   top:expression(((e=document.documentElement.scrollTop)?e:document.body.scrollTop)+100+'px'));
+    } 
+
+    *html,*html body{  //通过设置空图片解决IE6跳变的bug
+       background-image:url(about:blank);
+       background-attachment:fixed;
+    }
+
+注意点：
+（1） position:fixed;相对浏览器窗口边框对元素定位，而position:absolute是对网页边框而言。IE5.5及NS6尚不支持此属性，多用于滚动条移动。
+ (2)  jQuery通过id筛选比通过class筛选效率高
+（3） var m=$(this) 将this放到变量里方便使用
+心得：
+第二步略难，对jQuery的基础学习不够，需要再深入了解。此步日后需再过一遍
+
+
+
+JS方法实现
+思路：
+（1）获取scrollTop值
+（2）获取menu
+ (3)获取items
+ (4)定义getElementByClassName函数，因为浏览器兼容问题
+代码：
+<script>
+    
+  //定义getByClassName函数，让函数实现根据class name获取对象并返回
+
+	
+	function hasClass( obj, cls ){ 
+	    return obj.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+	}
+	
+	function removeClass( obj, cls ){ 
+	    if( hasClass( obj, cls )){ 
+		    //remove
+			var reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
+			obj.className = obj.className.replace(reg, "");
+		}
+	}
+	
+	
+    //定义getByClassName函数，让函数实现给对象增加class 
+    function addClass(obj,cls){
+        if(!hasClass(obj,cls)){
+            obj.className+=""+cls;
+        }
+    }
+	
+	window.onload = function(){ 
+		
+	    window.onscroll = function(){ 		
+		    var top = document.documentElement ? document.documentElement.scrollTop : document.body.scrollTop;
+			
+			var menus = document.getElementById("menu").getElementsByTagName("a");
+			
+			var items = getByClassName(document.getElementById("content"), "item");
+			
+			var currentId = "";
+			
+			for ( var i=0; i< items.length; i++ ){ 
+			    var _item = items[i];
+			    var _itemTop = _item.offsetTop;
+				if( top > _itemTop - 200 ){ 
+				    currentId = _item.id;
+				} else { 
+				    break;
+				}			
+			}
+		
+			 				
+      //请补充此处代码，给正确的menu下的a元素class赋值current
+        for(var j=0;j<menus.length;j++){
+            var _menus=menus[j];
+            var _href=_menus.href.split("#");
+            if(_href.(_href.length-1)!=currentId){
+               removeClass(_menu,"current");
+            }else
+               addClass(_menu,"current");
+        }
+      
+	
+		}	
+	}	
+</script>
+注意点：
+（1）getElementByClassName，IE浏览器对该方法支持较差。
+（2）jQuery的attr方法获取的<a href="#item">值为#item，但JS的.herf方法获取到的是一个长网址。
+ (3) 正则表达式(\\s|^)" + cls + "(\\s|$) 含义：\\s 是转义后的\s代表空格，|是或，^表示以cls开始，\\s空格，|或，$表示以cls结尾

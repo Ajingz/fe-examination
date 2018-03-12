@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>飞机大战</title>
+<style type="text/css">
+	*{margin:0; padding:0; font-family:'微软雅黑';}
+	#mainScreen{width: 512px; height: 768px;margin: 0 auto; position:relative; overflow: hidden;}
+	.bg{width:512px;height:768px;position: absolute;background-color: green;}
+	#bgimg2{top:-768px;}
+	#airplane{width:109px;height:82px;position:absolute;background-color: red; left:215px;top:668px;}
+	.enemy{position:absolute; width:30px;height:30px;left:-100px;top:0px;background-color:black;background-size: 30px 30px;}
+	.bullet{position:absolute; width:5px;height:10px;left:-100px;top:-100px;background-color: blue;background-size: 5px 10px;}
+	#startMenu,#restartMenu{position: absolute;width:512px;text-align:center;left: 0;top:300px;}
+	#start,#restart{line-height: 50px;font-size: 30px;font-weight:bold;color:#F00;display: block;text-decoration: none;}
+	#restartMenu{display: none}
+</style>
+</head>
+<body>
+<div id='mainScreen'><!-- 背景图片 -->
+	<div id='bgimg1' class='bg'></div>
+	<div id='bgimg2' class='bg'></div>
+	<div id='airplane'></div><!-- 飞机 -->
+	<div id='startMenu'><!-- 开始按钮 -->
+		<a href="#" id='start'>Start</a>
+	</div>
+	<div id='restartMenu'><!-- 重新开始 -->
+		<a href="#" id='restart'>Game Over</a>
+	</div>
+	<div class='enemy'></div><!-- 敌人 -->
+	<div class='enemy'></div>
+	<div class='enemy'></div>
+	<div class='enemy'></div>
+	<div class='enemy'></div>
+	<div class='bullet'></div><!-- 子弹 -->
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+	<div class='bullet'></div>
+
+</div>
+<script>
+window.onload-function(){
+	var bgTimer=setInterval(bgRun,10);
+	var jsBg1=document.getElemntById('bgimg1');
+	console.log(jsBg1);
+	function bgRun(){
+
+	}
+}
+
+</script>
+
+</body>
+</html> 

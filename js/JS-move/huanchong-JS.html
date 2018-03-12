@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>JS缓冲运动</title>
+<style>
+body,div,span{
+  margin:0;
+  padding:0;	
+}
+#div1{
+	width:200px;
+	height:200px;
+	background:red;
+	position:relative;
+	left:-200px;
+	top:0;
+	}
+#div1 span{
+    width:20px;
+	height:50px;
+	background:blue;
+	position:absolute;
+	left:200px;
+	top:75px;	
+	}
+</style>
+<script>
+window.onload = function(){ //加载函数
+	var oDiv=document.getElementById("div1");
+    oDiv.onmouseover=function(){  //鼠标经过时启动函数
+		startMove(0);
+	    }
+    oDiv.onmouseout=function(){
+		startMove(-200);
+		}
+    }
+var timer=null;
+function startMove(itag){
+	clearInterval(timer);  //清理定时器，防止多个定时器一起工作
+	var oDiv=document.getElementById("div1");
+	timer=setInterval(function(){  //定时器，每隔一定时间调用函数
+	    var speed=(itag-oDiv.offsetLeft)/20;
+		speed=speed>0?Math.ceil(speed):Math.floor(speed); //防止出现小数位的像素，需向上或向下取整
+	    if(oDiv.offsetLeft==itag){   //若当前值为0，清空计时器
+			clearInterval(timer);
+			}
+		else{
+		oDiv.style.left=oDiv.offsetLeft+speed+'px';}
+		},30)
+	}
+</script>
+</head>
+
+<body>
+<div id="div1"><span id="share">分享</span></div>
+</body>
+</html>

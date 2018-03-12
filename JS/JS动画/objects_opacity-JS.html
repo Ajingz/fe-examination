@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>JS多物体透明度动画</title>
+<style>
+body{
+   margin:0;
+   padding:0;
+	}
+div{
+	width:200px;
+	height:200px;
+	background:red;
+	margin:10px;
+	float:left;
+	filter:alpha(opacity,30); /*IE浏览器专用*/
+    opacity:0.3;  /*其他高版本浏览器*/
+	}
+</style>
+<script>
+//var timer=null;
+//var alpha=30;
+window.onload=function(){
+	var oDiv=document.getElementsByTagName('div');
+	for(var i=0;i<oDiv.length;i++){
+	 oDiv[i].timer=null;
+	 oDiv[i].alpha=30;
+	 oDiv[i].onmouseover=function(){
+		startMove(this,100);
+		}
+	 oDiv[i].onmouseout=function(){
+		startMove(this,30);
+		}
+	}
+	}
+function startMove(obj,itag){
+	clearInterval(obj.timer);
+	obj.timer=setInterval(function(){
+		var speed=0;
+		if(obj.alpha>itag){
+			speed=-10;
+			}
+		else{
+			speed=10;
+			}
+		if(obj.alpha==itag){
+			clearInterval(obj.timer);
+			}
+		else{
+			obj.alpha+=speed;
+			obj.style.filter='alpha(opacity:'+obj.alpha+')'; //前面两个引号一对后面两个引号一对，用来传给css用的filter
+			obj.style.opacity=obj.alpha/100; 
+			}
+		},30)
+	}
+</script>
+</head>
+
+<body>
+<div id="div1"></div>
+<div id="div2"></div>
+<div id="div3"></div>
+<div id="div4"></div>
+</body>
+</html>
