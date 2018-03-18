@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8"/>
+	<head>
+    <title>箭头流程</title>
+    </head>
+    <style>
+        li{
+            width:85px;
+            height:25px;
+            background: #fff;
+            font-size: 12px;
+            border: 1px inside #e5e5e5;
+            line-height: 25px;
+            text-align: center;
+            display: inline-block;
+            position: relative;  
+            border-top: 1px solid #e5e5e5;
+            border-bottom: 1px solid #e5e5e5;
+            margin: 0 4px; 
+            color: #666; 
+        }
+         li:after{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent; 
+            border-bottom: 13px solid transparent;
+            border-left: 11px solid #e5e5e5;  
+            top:0;
+            position: absolute;
+            right:-11px;
+        }
+         span:after{
+            content: '';
+            display: block;
+            border-top: 12px solid transparent; 
+            border-bottom: 12px solid transparent;
+            border-left: 10px solid #fff;  
+            top:1px;
+            position: absolute;
+            right:-10px;
+            z-index: 11; 
+        }
+
+         li:before{
+            content: '';
+            display:block;
+            border-top: 13px solid transparent; 
+            border-bottom: 13px solid transparent;
+            border-left: 11px solid #e5e5e5;
+            top:0;
+            position:absolute;
+            left:0px; 
+            z-index:1; 
+        }
+         span:before{
+            content: '';
+            display:block;
+            border-top: 12px solid transparent; 
+            border-bottom: 12px solid transparent;
+            border-left: 10px solid #fff;
+            top:1px;
+            position:absolute;
+            left:0px;
+            z-index:11; 
+        }
+         li:first-child{    
+            border-left: 1px solid #e5e5e5;    
+        }
+         li:first-child:before{    
+            display: none;    
+        } 
+         li:first-child span:before{    
+            display: none;    
+        } 
+         li:last-child {    
+            border-right: 1px solid #e5e5e5;     
+        }   
+         li:last-child:after{    
+            display: none;    
+        } 
+         li:last-child span:after{    
+            display: none;    
+        } 
+
+        /*#main li:hover{
+            background: #108EE9;
+        }
+        #main span:hover{
+            background: #108EE9;
+            color: #fff;
+        }
+        #main span:hover::after{
+            border-left: 10px solid #108EE9;
+        }
+        #main span:hover::before{
+            border-top: 12px solid #108EE9; 
+            border-bottom: 12px solid #108EE9;
+        }
+        #main li:hover::after{
+            border-left: 11px solid #108EE9;
+        }
+        #main li:hover::before{
+            border-top: 13px solid #108EE9; 
+            border-bottom: 12px solid #108EE9;
+        }*/
+        #stop{
+            width:95px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            font-size: 12px;
+            border:1px solid #D0021B;
+            display: none;
+        }
+
+        .active{
+            width:85px;
+            height:25px;
+            background: #F6F6F6;
+            font-size: 12px;
+            border: 1px inside #e5e5e5;
+            line-height: 25px;
+            text-align: center;
+            display: inline-block;
+            position: relative;
+            color: #666
+        }
+        .active{
+            background: #108EE9;
+            color: #fff;
+        }
+        .active span:after{
+            border-left: 10px solid #108EE9;
+        }
+        .active span:before{
+            border-top: 12px solid #108EE9; 
+            border-bottom: 12px solid #108EE9;
+        }
+        .active li:after{
+            border-left: 11px solid #108EE9;
+        }
+        .active li:before{
+            border-top: 13px solid #108EE9; 
+            border-bottom: 12px solid #108EE9;
+        }
+        .shadow{
+            width:85px;
+            height:25px;
+            background: #F6F6F6;
+            font-size: 12px;
+            border: 1px inside #e5e5e5;
+            line-height: 25px;
+            text-align: center;
+            display: inline-block;
+            position: relative;
+            color: #666
+        }
+        .shadow span:after{
+            border-left: 10px solid #F6F6F6;
+        }
+        .shadow span:before{
+            border-top: 12px solid #F6F6F6; 
+            border-bottom: 12px solid #F6F6F6;
+        }
+        .shadow li:after{
+            border-left: 11px solid #F6F6F6;
+        }
+        .shadow li:before{
+            border-top: 13px solid #F6F6F6; 
+            border-bottom: 12px solid #F6F6F6;
+        }
+    </style>
+    <body>
+    	<div id="main"> 
+        </div>
+        <div id="stop">
+            <span>已中止</span>
+        </div>
+        <script type="text/javascript">
+            var stop = document.getElementById('stop');
+            var main = document.getElementById('main');
+            var arr=[{"name":"草稿","status":"WAIT_ACCEPT","isShadowed":true},
+                    {"name":"待审核","status":"WAIT_DELIVER","isShadowed":false,"isCurrentStatus":true},
+                    {"name":"待复核","status":"STOCK_IN"},
+                    {"name":"已核准","status":"DELIVERED"}];
+            if(arr.length===1)
+            {   
+                stop.style.display = 'block';
+                main.style.display = 'none';
+            }else{
+                for(var i=0;i<arr.length;i++){
+                    main.innerHTML += '<li><span>'+arr[i].name+'</span></li> ';
+                }
+            }
+            var list = document.getElementsByTagName('li');
+            for(var i=0;i<arr.length;i++){
+                if(arr[i].isShadowed===true){ 
+                    list[i].classList.add("shadow");
+                }
+                if(arr[i].isCurrentStatus===true){
+                    list[i].classList.add("active");
+                }
+            }
+        </script>
+    </body>
+</html>
